@@ -1,0 +1,24 @@
+{
+  "data": {
+    "Address": {
+      "Address1": "Address1",
+      "Address2": "Address2",
+      "City": "City",
+      "State": "State",
+      "ZipCode": "ZipCode",
+      "Country": "Country"
+    }
+  },
+  "eventId": "27836657-d3d0-4a8f-88f7-8dc3e2a40972",
+  "eventNumber": 2,
+  "eventName": "PersonMailingAddressUpdated",
+  "eventDate": "",
+  "eventVersion": 1,
+  "correlationId": null,
+  "causationId": null,
+  "aggregateId": "784d17f9-12fa-45b5-905d-bc4ec84accc0",
+  "aggregateType": "People",
+  "commandId": "f01d3029-f099-4436-8e92-a0d290fa5a48",
+  "commandName": "CreatePerson",
+  "service": "merchant"
+}
