@@ -17,7 +17,7 @@ public abstract class Aggregate
         _aggregateEventCreator = aggregateEventCreator;
     }
 
-    public Guid? AggregateId { get; protected set; } = null;
+    public Guid? AggregateId { get; private set; } = null;
     public long AggregateVersion { get; protected set; } = -1;
 
     protected internal List<AggregateEvent> EventsToWrite { get; } = new();
@@ -43,26 +43,22 @@ public abstract class Aggregate
     }
 
     public async Task<IEnumerable<AggregateEvent>> HandleCommand(Command command)
-    {
-        if (CommandHandlers[command.CommandName].ReturnType != typeof(IEnumerable<AggregateEvent>) && 
-            CommandHandlers[command.CommandName].ReturnType != typeof(Task<IEnumerable<AggregateEvent>>))
-        {
-            throw new NotSupportedException(
-                $"{CommandHandlers[command.CommandName].Name} command handler must return either IEnumerable<AggregateEvent> or Task<IEnumerable<AggregateEvent>>");
-        }
-        
+    {   
         var isAsync = CommandHandlers[command.CommandName].GetCustomAttribute<AsyncStateMachineAttribute>() != null;
 
         if (isAsync)
         {
             var commandHandlerTask = CommandHandlers[command.CommandName]
-                .Invoke(this, new object[] {command}) as Task<IEnumerable<AggregateEvent>> ?? Task.FromResult(Enumerable.Empty<AggregateEvent>());
+                .Invoke(this, new object[] {command}) as Task ?? Task.FromResult(Enumerable.Empty<AggregateEvent>());
 
-            return await commandHandlerTask;
+            await commandHandlerTask;
+            
+            return Enumerable.Empty<AggregateEvent>();
         }
-        
-        return CommandHandlers[command.CommandName]
-            .Invoke(this, new object[] {command}) as IEnumerable<AggregateEvent> ?? Enumerable.Empty<AggregateEvent>();
+
+        CommandHandlers[command.CommandName].Invoke(this, new object[] {command});
+
+        return EventsToWrite;
     }
 
     public void ApplyEvents(IEnumerable<AggregateEvent> events)

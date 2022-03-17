@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using Newtonsoft.Json.Linq;
@@ -22,8 +21,6 @@ public class AggregateTests
     private readonly Mock<IEventWriter> _eventWriter = new();
     private readonly Mock<IAggregateFactory> _aggregateFactory = new();
     private readonly Mock<IOptions<ServiceOptions>> _serviceOptions = new();
-
-    private readonly Mock<ILogger<CommandHandler>> _logger = new();
 
     private string PathToResources = "ES.Core.Test.Aggregates.Events.";
 
@@ -61,7 +58,7 @@ public class AggregateTests
         _aggregateFactory.Setup(x => x.Create("People")).Returns(new People(aggregateEventCreator));
 
         var commandHandler = new CommandHandler(_eventReader.Object, _eventWriter.Object, _aggregateFactory.Object,
-            _logger.Object, _serviceOptions.Object);
+            _serviceOptions.Object);
 
         var events = (await commandHandler.HandleAsync(createPerson)).ToList();
         
@@ -143,7 +140,7 @@ public class AggregateTests
         _aggregateFactory.Setup(x => x.Create("People")).Returns(new People(aggregateEventCreator));
 
         var commandHandler = new CommandHandler(_eventReader.Object, _eventWriter.Object, _aggregateFactory.Object,
-            _logger.Object, _serviceOptions.Object);
+            _serviceOptions.Object);
 
         var events = (await commandHandler.HandleAsync(createPerson)).ToList();
         
@@ -219,7 +216,7 @@ public class AggregateTests
         _aggregateFactory.Setup(x => x.Create("People")).Returns(new People(aggregateEventCreator));
 
         var commandHandler = new CommandHandler(_eventReader.Object, _eventWriter.Object, _aggregateFactory.Object,
-            _logger.Object, _serviceOptions.Object);
+            _serviceOptions.Object);
 
         await Assert.ThrowsAsync<TargetInvocationException>(async () => await commandHandler.HandleAsync(createPerson));
     }

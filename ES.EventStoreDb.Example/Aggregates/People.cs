@@ -17,7 +17,7 @@ public class People : Aggregate
     }
 
     [AggregateCommandHandler("CreatePerson")]
-    public IEnumerable<AggregateEvent> CreatePerson(Command command)
+    public void CreatePerson(Command command)
     {
         if (AggregateVersion != -1)
         {
@@ -33,12 +33,10 @@ public class People : Aggregate
             data["LastName"] = command.Data!["LastName"];
         });
         AddEvent(command, "PersonMailingAddressUpdated", command.Data!["Address"]!.ToObject<JObject>()!);
-
-        return EventsToWrite;
     }
     
     [AggregateCommandHandler("UpdatePersonName")]
-    public IEnumerable<AggregateEvent> UpdatePersonName(Command command)
+    public void UpdatePersonName(Command command)
     {
         if (AggregateVersion == -1)
         {
@@ -50,7 +48,7 @@ public class People : Aggregate
 
         if (firstName == _firstName && lastName == _lastName)
         {
-            return Enumerable.Empty<AggregateEvent>();
+            return;
         }
 
         AddEvent(command, "PersonNameUpdated", data =>
@@ -58,12 +56,10 @@ public class People : Aggregate
             data["FirstName"] = command.Data!["FirstName"];
             data["LastName"] = command.Data!["LastName"];
         });
-        
-        return EventsToWrite;
     }
 
     [AggregateCommandHandler("UpdatePersonMailingAddress")]
-    public async Task<IEnumerable<AggregateEvent>> UpdatePersonMailingAddress(Command command)
+    public async Task UpdatePersonMailingAddress(Command command)
     {
         if (AggregateVersion == -1)
         {
@@ -74,8 +70,6 @@ public class People : Aggregate
         await Task.CompletedTask;
         
         AddEvent(command, "PersonMailingAddressUpdated", command.Data!["Address"]!.ToObject<JObject>()!);
-
-        return EventsToWrite;
     }
 
     [AggregateEventHandler("PersonNameUpdated")]
