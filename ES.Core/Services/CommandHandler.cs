@@ -3,7 +3,6 @@ using ES.Core.Commands;
 using ES.Core.ConfigSettings;
 using ES.Core.Events;
 using ES.Core.Services.Abstractions;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ES.Core.Extensions;
 
@@ -14,20 +13,17 @@ public sealed class CommandHandler : ICommandHandler
     private readonly IEventReader _eventReader;
     private readonly IEventWriter _eventWriter;
     private readonly IAggregateFactory _aggregateFactory;
-
-    private readonly ILogger<CommandHandler> _logger;
     private readonly ServiceOptions _serviceOptions;
 
     private static readonly ConcurrentDictionary<Guid, SemaphoreSlim> CommandsHandled = new();
 
     public CommandHandler(IEventReader eventReader, IEventWriter eventWriter, IAggregateFactory aggregateFactory,
-        ILogger<CommandHandler> logger, IOptions<ServiceOptions> options)
+        IOptions<ServiceOptions> options)
     {
         _eventReader = eventReader;
         _eventWriter = eventWriter;
         _aggregateFactory = aggregateFactory;
         
-        _logger = logger;
         _serviceOptions = options.Value;
     }
 
@@ -58,18 +54,6 @@ public sealed class CommandHandler : ICommandHandler
             aggregate.EventsToWrite.Clear();
             
             return eventsToWrite;
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e,
-                "Error while executing a command (CommandName: {CommandName}, CommandId: {CommandId}, " +
-                "CorrelationId: {CorrelationId}, CausationId: {CausationId}, AggregateId: {AggregateId}, " +
-                "AggregateType: {AggregateType}, CommandVersion: {CommandVersion}, AggregateVersion: {AggregateVersion}" +
-                "AuthorizedUserId: {AuthorizedUserId}, CommandData: {CommandData})",
-                command.CommandName, command.CommandId, command.CorrelationId, command.CausationId, 
-                command.AggregateId, command.AggregateType, command.CommandVersion, command.AggregateVersion, 
-                command.AuthorizedUserId, command.Data);
-            throw;
         }
         finally
         {
