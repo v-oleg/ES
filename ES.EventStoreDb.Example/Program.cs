@@ -2,6 +2,9 @@ using ES.EventStoreDb.Example;
 using ES.EventStoreDb.Example.ConfigSettings;
 using ES.EventStoreDb.Extensions;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +22,8 @@ builder.Configuration.GetSection(SqlOptions.SqlSection).Bind(sqlOptions);
 // {
 //     options.UseSqlServer(sqlOptions.ConnectionString);
 // });
+
+BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String));
 
 var mongoDbOptions = new MongoDbOptions();
 builder.Configuration.GetSection(MongoDbOptions.MongoDbSection).Bind(mongoDbOptions);
