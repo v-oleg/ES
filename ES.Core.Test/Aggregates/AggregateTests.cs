@@ -70,7 +70,7 @@ public class AggregateTests
         Assert.Equal("merchant", events[0].Service);
         Assert.Equal(nameof(AggregateEvent), events[0].EventType);
         Assert.Equal(aggregateId, events[0].AggregateId);
-        Assert.Equal(0, events[0].EventNumber);
+        Assert.Equal((ulong)0, events[0].EventNumber);
         Assert.Null(events[0].CorrelationId);
         Assert.Null(events[0].CausationId);
         Assert.Equal(new JObject(), events[0].Data);
@@ -81,7 +81,7 @@ public class AggregateTests
         Assert.Equal("merchant", events[0].Service);
         Assert.Equal(nameof(AggregateEvent), events[0].EventType);
         Assert.Equal(aggregateId, events[1].AggregateId);
-        Assert.Equal(1, events[1].EventNumber);
+        Assert.Equal((ulong)1, events[1].EventNumber);
         Assert.Null(events[1].CorrelationId);
         Assert.Null(events[1].CausationId);
         Assert.Equal(new JObject { ["FirstName"] = "Vasia", ["LastName"] = "Pupkin" }, events[1].Data);
@@ -92,7 +92,7 @@ public class AggregateTests
         Assert.Equal("merchant", events[2].Service);
         Assert.Equal(nameof(AggregateEvent), events[2].EventType);
         Assert.Equal(aggregateId, events[2].AggregateId);
-        Assert.Equal(2, events[2].EventNumber);
+        Assert.Equal((ulong)2, events[2].EventNumber);
         Assert.Null(events[2].CorrelationId);
         Assert.Null(events[2].CausationId);
         Assert.Equal("Address1", events[2].Data["Address"]!["Address1"]!.Value<string>());
@@ -152,7 +152,7 @@ public class AggregateTests
         Assert.Equal("merchant", events[0].Service);
         Assert.Equal(nameof(AggregateEvent), events[0].EventType);
         Assert.Equal(Guid.Parse("784d17f9-12fa-45b5-905d-bc4ec84accc0"), events[0].AggregateId);
-        Assert.Equal(0, events[0].EventNumber);
+        Assert.Equal((ulong)0, events[0].EventNumber);
         Assert.Null(events[0].CorrelationId);
         Assert.Null(events[0].CausationId);
         Assert.Equal(new JObject(), events[0].Data);
@@ -163,7 +163,7 @@ public class AggregateTests
         Assert.Equal("merchant", events[0].Service);
         Assert.Equal(nameof(AggregateEvent), events[0].EventType);
         Assert.Equal(Guid.Parse("784d17f9-12fa-45b5-905d-bc4ec84accc0"), events[0].AggregateId);
-        Assert.Equal(1, events[1].EventNumber);
+        Assert.Equal((ulong)1, events[1].EventNumber);
         Assert.Null(events[1].CorrelationId);
         Assert.Null(events[1].CausationId);
         Assert.Equal(new JObject { ["FirstName"] = "Vasia", ["LastName"] = "Pupkin" }, events[1].Data);
@@ -174,7 +174,7 @@ public class AggregateTests
         Assert.Equal("merchant", events[2].Service);
         Assert.Equal(nameof(AggregateEvent), events[2].EventType);
         Assert.Equal(Guid.Parse("784d17f9-12fa-45b5-905d-bc4ec84accc0"), events[0].AggregateId);
-        Assert.Equal(2, events[2].EventNumber);
+        Assert.Equal((ulong)2, events[2].EventNumber);
         Assert.Null(events[2].CorrelationId);
         Assert.Null(events[2].CausationId);
         Assert.Equal("Address1", events[2].Data["Address"]!["Address1"]!.Value<string>());

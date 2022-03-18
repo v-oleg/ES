@@ -13,13 +13,13 @@ public class EventTests
         get
         {
             yield return new object?[]{ Guid.NewGuid(), Guid.NewGuid(), 1 };
-            yield return new object?[]{ null, null, null };
+            yield return new object?[]{ null, null, 0 };
         }
     }
     
     [Theory]
     [MemberData(nameof(EventData))]
-    public void Should_Create_Event_With_Provided_Json(Guid? correlationId, Guid? causationId, long? eventNumber)
+    public void Should_Create_Event_With_Provided_Json(Guid? correlationId, Guid? causationId, ulong eventNumber)
     {
         var eventJson = new JObject
         {

@@ -25,8 +25,8 @@ public class Converter
         throw new FileNotFoundException($"{pathParts[^2]}.{pathParts[^1]} not found.", pathParts[^1]);
     }
     
-    public string ToEventNameStream(string serviceName, string aggregateType) =>
-        $"$en-{serviceName}.{aggregateType}";
+    public string ToEventNameStream(string serviceName, string eventName) =>
+        $"$en-{serviceName}.{eventName}";
     
     public string ToAggregateNameStream(string serviceName, string aggregateType) =>
         $"$ce-{serviceName}.{aggregateType}";

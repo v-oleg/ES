@@ -48,12 +48,9 @@ public abstract class Aggregate
 
         if (isAsync)
         {
-            var commandHandlerTask = CommandHandlers[command.CommandName]
-                .Invoke(this, new object[] {command}) as Task ?? Task.FromResult(Enumerable.Empty<AggregateEvent>());
-
-            await commandHandlerTask;
+            await (Task) CommandHandlers[command.CommandName].Invoke(this, new object[] {command})!;
             
-            return Enumerable.Empty<AggregateEvent>();
+            return EventsToWrite;
         }
 
         CommandHandlers[command.CommandName].Invoke(this, new object[] {command});

@@ -17,7 +17,7 @@ public class Event
 
     public Guid EventId => EventJson.GetValue("eventId")!.ToObject<Guid>();
 
-    public long? EventNumber => EventJson.GetValue("eventNumber")!.Value<long?>();
+    public ulong EventNumber => EventJson.GetValue("eventNumber")!.Value<ulong>();
 
     public JObject Data => EventJson.GetValue("data")!.ToObject<JObject>()!;
 
