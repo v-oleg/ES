@@ -1,6 +1,8 @@
-using ES.Core.Extensions;
-using ES.EventStoreDb.Example.Aggregates;
+using ES.EventStoreDb.Example;
+using ES.EventStoreDb.Example.ConfigSettings;
 using ES.EventStoreDb.Extensions;
+using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,9 +13,21 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var sqlOptions = new SqlOptions();
+builder.Configuration.GetSection(SqlOptions.SqlSection).Bind(sqlOptions);
+// builder.Services.AddDbContext<SqlDbContext>(options =>
+// {
+//     options.UseSqlServer(sqlOptions.ConnectionString);
+// });
 
-builder.Services.AddEventStore(builder.Configuration);
-builder.Services.AddAggregates(builder.Configuration, typeof(People).Assembly);
+var mongoDbOptions = new MongoDbOptions();
+builder.Configuration.GetSection(MongoDbOptions.MongoDbSection).Bind(mongoDbOptions);
+var settings = MongoClientSettings.FromConnectionString(mongoDbOptions.ConnectionString);
+settings.ServerApi = new ServerApi(ServerApiVersion.V1);
+var mongoDbClient = new MongoClient(settings);
+builder.Services.AddSingleton(mongoDbClient);
+
+builder.Services.StartUp(builder.Configuration);
 
 var app = builder.Build();
 
