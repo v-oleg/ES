@@ -8,8 +8,8 @@ public class PersonProjection : Core.Services.Abstractions.Projection
 {
     private Guid _aggregateId;
 
-    [BsonId] public string Id { get; private set; } 
-    
+    [BsonId] public string Id { get; private set; } = null!;
+
     public sealed override Guid AggregateId
     {
         get => _aggregateId;
@@ -19,6 +19,6 @@ public class PersonProjection : Core.Services.Abstractions.Projection
             Id = _aggregateId.ToString().Replace("-", string.Empty);
         } 
     }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
+    public string FirstName { get; set; } = null!;
+    public string LastName { get; set; } = null!;
 }

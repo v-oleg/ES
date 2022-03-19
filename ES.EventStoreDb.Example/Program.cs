@@ -1,5 +1,6 @@
 using ES.EventStoreDb.Example;
 using ES.EventStoreDb.Example.ConfigSettings;
+using ES.EventStoreDb.Example.Sql;
 using ES.EventStoreDb.Extensions;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
@@ -18,10 +19,10 @@ builder.Services.AddSwaggerGen();
 
 var sqlOptions = new SqlOptions();
 builder.Configuration.GetSection(SqlOptions.SqlSection).Bind(sqlOptions);
-// builder.Services.AddDbContext<SqlDbContext>(options =>
-// {
-//     options.UseSqlServer(sqlOptions.ConnectionString);
-// });
+builder.Services.AddDbContext<SqlDbContext>(options =>
+{
+    options.UseSqlServer(sqlOptions.ConnectionString);
+});
 
 BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String));
 

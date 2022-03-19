@@ -32,7 +32,7 @@ public sealed class CommandHandler : ICommandHandler
         // Lock to make handling commands mutually exclusive by CommandId
         var commandIdLock =
             CommandsHandled.AddOrUpdate(command.CommandId, new SemaphoreSlim(1, 1), (_, idLock) => idLock);
-        await commandIdLock.WaitAsync().ConfigureAwait(false);
+        await commandIdLock.WaitAsync();
 
         try
         {

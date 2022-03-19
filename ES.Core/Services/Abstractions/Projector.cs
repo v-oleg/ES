@@ -8,7 +8,7 @@ public abstract class Projector
     
     public abstract Task HandleAsync<TEvent>(TEvent @event) where TEvent : Event;
     
-    public abstract Task HandleAsync<TEvent>(IEnumerable<TEvent> events) where TEvent : Event;
+    public abstract Task<object> HandleAsync<TEvent>(IEnumerable<TEvent> events) where TEvent : Event;
     
     public abstract Task<ulong?> GetLasEventNumberAsync();
     

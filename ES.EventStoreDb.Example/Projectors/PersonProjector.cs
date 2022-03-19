@@ -31,8 +31,8 @@ public class PersonProjector : AggregateProjector<PersonProjection>
     [AggregateEvent("PersonNameUpdated")]
     public void PersonNameUpdated(AggregateEvent @event)
     {
-        Value.FirstName = @event.Data["FirstName"].Value<string>();
-        Value.LastName = @event.Data["LastName"].Value<string>();
+        Value.FirstName = @event.Data["FirstName"]!.Value<string>()!;
+        Value.LastName = @event.Data["LastName"]!.Value<string>()!;
     }
 
     public override async Task<ulong?> GetLasEventNumberAsync()

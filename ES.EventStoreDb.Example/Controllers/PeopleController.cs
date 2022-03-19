@@ -1,10 +1,17 @@
+using ES.Core;
 using ES.Core.Commands;
+using ES.Core.ConfigSettings;
 using ES.Core.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using ES.EventStoreDb.Example.Aggregates;
+using ES.EventStoreDb.Example.Projection;
+using ES.EventStoreDb.Example.Projectors;
 using ES.EventStoreDb.Example.RequestModels;
+using ES.EventStoreDb.Example.Sql;
 using ES.EventStoreDb.Example.ViewModels;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
@@ -17,12 +24,19 @@ public class PeopleController : ControllerBase
 {
     private readonly ICommandHandler _commandHandler;
     private readonly IMongoCollection<BsonDocument> _peopleCollection;
+    private readonly IEventReader _eventReader;
+    private readonly ServiceOptions _serviceOptions;
+    private readonly SqlDbContext _dbContext;
 
-    public PeopleController(ICommandHandler commandHandler, MongoClient mongoClient)
+    public PeopleController(ICommandHandler commandHandler, MongoClient mongoClient, IEventReader eventReader,
+        IOptions<ServiceOptions> options, SqlDbContext dbContext)
     {
         _commandHandler = commandHandler;
+        _eventReader = eventReader;
+        _dbContext = dbContext;
         var db = mongoClient.GetDatabase("ProjectionsDemo");
         _peopleCollection = db.GetCollection<BsonDocument>("People");
+        _serviceOptions = options.Value;
     }
 
     [HttpPost]
@@ -33,10 +47,10 @@ public class PeopleController : ControllerBase
             data: JObject.FromObject(person));
 
         await _commandHandler.HandleAsync(createPerson);
-        
+
         return Created($"/people/{aggregateId}", aggregateId);
     }
-    
+
     [HttpPatch]
     [Route("{id}")]
     public async Task<IActionResult> UpdatePersonName([FromRoute] Guid id, [FromBody] Person person)
@@ -49,7 +63,7 @@ public class PeopleController : ControllerBase
 
         return Accepted();
     }
-    
+
     [HttpPatch]
     [Route("{id}/address")]
     public async Task<IActionResult> UpdatePersonMailingAddress([FromRoute] Guid id, [FromBody] Person person)
@@ -62,7 +76,7 @@ public class PeopleController : ControllerBase
 
         return Accepted();
     }
-    
+
     [HttpGet]
     [Route("{id}")]
     public async Task<ActionResult<PersonModel>> Get([FromRoute] Guid id)
@@ -72,23 +86,37 @@ public class PeopleController : ControllerBase
             .Project(projection).FirstOrDefaultAsync();
         if (personBson != null)
         {
-            
+
             return Ok(BsonSerializer.Deserialize<PersonModel>(personBson));
         }
 
         return NotFound();
     }
-    
+
     [HttpGet]
     [Route("{id}/eventsource")]
     public async Task<ActionResult<PersonModel>> GetPerson([FromRoute] Guid id)
     {
-        //TODO get person using projector on demand and using persistent datastore
-        await Task.CompletedTask;
-        
-        return Ok(new Person());
+        var events =
+            await _eventReader.GetAggregateEventsAsync(
+                Tools.Instance.Converter.ToAggregateIdStream(_serviceOptions.Name, nameof(People), id));
+
+        var personEventSourcedProjector = new PersonEvenetSourcedProjector
+        {
+            Value =
+            {
+                AggregateId = id
+            }
+        };
+        var person = await personEventSourcedProjector.HandleAsync(events) as PersonProjection;
+
+        return Ok(new PersonModel
+        {
+            FirstName = person!.FirstName,
+            LastName = person!.LastName,
+        });
     }
-    
+
     [HttpGet]
     [Route("")]
     public async Task<ActionResult<IEnumerable<PersonModel>>> GetAll()
@@ -99,7 +127,17 @@ public class PeopleController : ControllerBase
         {
             return Ok(people.Select(p => BsonSerializer.Deserialize<PersonModel>(p)));
         }
-        
+
         return Ok(new Person());
+    }
+
+    [HttpGet]
+    [Route("{id}/address")]
+    public async Task<ActionResult<PersonAddressProjection>> GetAddress([FromRoute] Guid id)
+    {
+        var address = await _dbContext.PersonMailingAddress.AsNoTracking().SingleOrDefaultAsync(x => x.AggregateId == id);
+        if (address == null) return NotFound();
+
+        return Ok(address);
     }
 }
