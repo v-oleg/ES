@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using ES.Core;
 using ES.Core.Services.Abstractions;
 using ES.EventStoreDb.Extensions;
@@ -7,6 +8,8 @@ namespace ES.EventStoreDb.Services;
 
 internal sealed class AggregateSubscription : ISubscription
 {
+    private static readonly ConcurrentDictionary<Guid, SemaphoreSlim> EventHandled = new();
+
     private readonly IEventStoreClientService<EventStoreClient> _eventStoreClient;
     private readonly Dictionary<Type, IProjectorInformation> _aggregateProjectorInformations;
     private readonly IProjectorFactory _projectorFactory;
@@ -69,9 +72,22 @@ internal sealed class AggregateSubscription : ISubscription
     private async Task HandleEventAsync(Projector projector, StreamSubscription stream, ResolvedEvent @event, CancellationToken cancellationToken)
     {
         var aggregateEvent = @event.Event.AsAggregateEvent();
-        aggregateEvent.GetEventJsonReference()["eventNumber"] = @event.Link!.EventNumber.ToUInt64();
-        await projector.InitAsync(aggregateEvent.AggregateId);
-        await projector.HandleAsync(aggregateEvent);
+
+        var aggregateIdIdLock =
+            EventHandled.AddOrUpdate(aggregateEvent.AggregateId, new SemaphoreSlim(1, 1), (_, idLock) => idLock);
+        await aggregateIdIdLock.WaitAsync(cancellationToken);
+
+        try
+        {
+            aggregateEvent.GetEventJsonReference()["eventNumber"] = @event.Link!.EventNumber.ToUInt64();
+            await projector.InitAsync(aggregateEvent.AggregateId);
+            await projector.HandleAsync(aggregateEvent);
+        }
+        finally
+        {
+            aggregateIdIdLock.Release();
+        }
+        
     }
 
     private async Task ResubscribeSync(IProjectorInformation projectorInformation,
