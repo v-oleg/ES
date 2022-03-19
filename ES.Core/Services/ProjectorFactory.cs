@@ -9,13 +9,13 @@ internal sealed class ProjectorFactory : IProjectorFactory
 
     public ProjectorFactory(IEnumerable<IProjectorInformation> aggregateProjectors, IServiceProvider serviceProvider)
     {
-        _aggregateProjectors = aggregateProjectors.ToDictionary(k => k.AggregateProjector);
+        _aggregateProjectors = aggregateProjectors.ToDictionary(k => k.Projector);
         _serviceProvider = serviceProvider;
     }
 
     public Projector Create(string projector) =>
         (Projector) _serviceProvider.GetService(_aggregateProjectors[projector]
-            .AggregateProjectorType)!;
+            .ProjectorType)!;
 
     public Projector Create(Type projectorType) =>
         (Projector) _serviceProvider.GetService(projectorType)!;

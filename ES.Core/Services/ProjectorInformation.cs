@@ -6,26 +6,26 @@ namespace ES.Core.Services;
 
 internal class ProjectorInformation : IProjectorInformation
 {
-    public Type AggregateProjectorType { get; set; }
-    public string AggregateProjector { get; }
-    public string AggregateType { get; }
-    public string Service { get; }
+    public Type ProjectorType { get; set; }
+    public string Projector { get; }
+    public string? AggregateType { get; }
+    public string? Service { get; }
     public string TypeFullName { get; }
     public Assembly AssemblyName { get; }
     public IReadOnlyList<string> Events { get; }
 
-    public ProjectorInformation(Type aggregateProjectorType)
+    public ProjectorInformation(Type projectorType)
     {
-        var aggregateStream = aggregateProjectorType.GetCustomAttribute<AggregateStreamAttribute>()!;
-        
-        AggregateProjectorType = aggregateProjectorType;
-        AggregateProjector = aggregateProjectorType.Name;
-        TypeFullName = aggregateProjectorType.FullName!;
-        AssemblyName = aggregateProjectorType.Assembly;
-        AggregateType = aggregateStream.Aggregate;
-        Service = aggregateStream.Service;
+        var stream = projectorType.GetCustomAttribute<AggregateStreamAttribute>();
+
+        ProjectorType = projectorType;
+        Projector = projectorType.Name;
+        TypeFullName = projectorType.FullName!;
+        AssemblyName = projectorType.Assembly;
+        AggregateType = stream?.Aggregate;
+        Service = stream?.Service;
         Events = (
-            from methodInfo in aggregateProjectorType.GetMethods()
+            from methodInfo in projectorType.GetMethods()
             from commandHandlerForAttribute in
                 methodInfo.GetCustomAttributes<AggregateEventAttribute>()
             select commandHandlerForAttribute.Event).ToArray();
