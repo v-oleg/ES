@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ES.EventStoreDb.Example", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ES.EventStoreDb.ProcessManager.Example", "ES.EventStoreDb.ProcessManager.Example\ES.EventStoreDb.ProcessManager.Example.csproj", "{E1DE8002-E56C-41A4-9B8F-9F5BF9017143}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ES.EventSore.Example.Test", "ES.EventSore.Example.Test\ES.EventSore.Example.Test.csproj", "{523A6D58-C44B-424A-B794-560A5A832662}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ES.EventStore.Example.Test", "ES.EventStore.Example.Test\ES.EventStore.Example.Test.csproj", "{523A6D58-C44B-424A-B794-560A5A832662}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

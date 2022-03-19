@@ -1,6 +1,6 @@
 using Xunit;
 
-namespace ES.EventSore.Example.Test;
+namespace ES.EventStore.Example.Test;
 
 public class UnitTest1
 {
