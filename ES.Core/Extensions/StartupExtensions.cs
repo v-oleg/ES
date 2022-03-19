@@ -49,13 +49,13 @@ public static class StartupExtensions
     {
         foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
         {
-            var aggregateProjectors = assembly.GetTypes()
+            var projectors = assembly.GetTypes()
                 .Where(t => !t.IsAbstract && t.IsSubclassOf(typeof(Projector)) &&
-                            t.GetCustomAttribute<AggregateStreamAttribute>() != null);
-            foreach (var aggregateProjector in aggregateProjectors)
+                            t.GetCustomAttribute<IgnoreAttribute>() == null);
+            foreach (var projector in projectors)
             {
-                services.AddScoped(aggregateProjector);
-                services.AddSingleton(typeof(IProjectorInformation), new ProjectorInformation(aggregateProjector));
+                services.AddScoped(projector);
+                services.AddSingleton(typeof(IProjectorInformation), new ProjectorInformation(projector));
             }
         }
     }
