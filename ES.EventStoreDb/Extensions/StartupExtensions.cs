@@ -19,13 +19,18 @@ public static class StartupExtensions
         //TODO get connection string from AKV or AKS secrets
         services.Configure<EventStoreOptions>(config.GetSection(EventStoreOptions.EventStoreSection));
 
+        
         services.AddSingleton<IEventStoreClientService<EventStoreClient>, EventStoreClientService>();
         services.AddScoped<IEventReader, EventReader>();
         services.AddScoped<IEventWriter, EventWriter>();
 
+        services.AddScoped<ISubscription, AllStreamsSubscription>();
         services.AddScoped<ISubscription, AggregateSubscription>();
 
-        var subscription = services.BuildServiceProvider().GetService<ISubscription>()!;
-        subscription.SubscribeAsync(projectors);
+        var subscriptions = services.BuildServiceProvider().GetServices<ISubscription>();
+        foreach (var subscription in subscriptions)
+        {
+            subscription.SubscribeAsync(projectors);
+        }
     }
 }
