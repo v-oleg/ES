@@ -101,7 +101,7 @@ public class PeopleController : ControllerBase
             await _eventReader.GetAggregateEventsAsync(
                 Tools.Instance.Converter.ToAggregateIdStream(_serviceOptions.Name, nameof(People), id));
 
-        var personEventSourcedProjector = new PersonEvenetSourcedProjector
+        var personEventSourcedProjector = new PersonEventSourcedProjector
         {
             Value =
             {

@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ES.EventStoreDb.Example.Projectors
 {
-    public class PersonEvenetSourcedProjector : AggregateProjector<PersonProjection>
+    public class PersonEventSourcedProjector : AggregateProjector<PersonProjection>
     {
         [AggregateEvent("PersonCreated")]
         public void PersonCreated(AggregateEvent @event)
