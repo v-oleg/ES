@@ -34,11 +34,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="Aggregates\Events\PersonCreated.json" />
       <None Remove="Aggregates\Events\PersonMailingAddressUpdated.json" />
-      <EmbeddedResource Include="Aggregates\Events\PersonMailingAddressUpdated.json" />
       <None Remove="Aggregates\Events\PersonNameUpdated.json" />
-      <EmbeddedResource Include="Aggregates\Events\PersonNameUpdated.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Tools\PersonCreated.json" />
     </ItemGroup>
 
 </Project>

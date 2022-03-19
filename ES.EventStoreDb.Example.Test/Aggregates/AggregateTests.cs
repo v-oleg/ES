@@ -3,26 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
-using Moq;
-using Newtonsoft.Json.Linq;
 using ES.Core.Commands;
 using ES.Core.ConfigSettings;
 using ES.Core.Events;
 using ES.Core.Services;
 using ES.Core.Services.Abstractions;
+using ES.EventStoreDb.Example.Aggregates;
+using Microsoft.Extensions.Options;
+using Moq;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace ES.Core.Test.Aggregates;
+namespace ES.EventStoreDb.Example.Test.Aggregates;
 
-public class AggregateTests
+public class PeopleTests
 {
     private readonly Mock<IEventReader> _eventReader = new();
     private readonly Mock<IEventWriter> _eventWriter = new();
     private readonly Mock<IAggregateFactory> _aggregateFactory = new();
     private readonly Mock<IOptions<ServiceOptions>> _serviceOptions = new();
 
-    private string PathToResources = "ES.Core.Test.Aggregates.Events.";
+    private string PathToResources = "ES.EventStoreDb.Example.Test.Aggregates.Events.";
 
     [Fact]
     public async Task Should_Create_Person_When_Sending_CreatePerson_Command()
@@ -95,7 +96,7 @@ public class AggregateTests
         Assert.Equal((ulong)2, events[2].EventNumber);
         Assert.Null(events[2].CorrelationId);
         Assert.Null(events[2].CausationId);
-        Assert.Equal("Address1", events[2].Data["Address"]!["Address1"]!.Value<string>());
+        Assert.Equal("Address1", events[2].Data["Address1"]!.Value<string>());
     }
     
     [Fact]
@@ -124,9 +125,9 @@ public class AggregateTests
         _eventReader.Setup(x => x.GetAggregateEventsAsync(It.IsAny<string>()))
             .ReturnsAsync(new List<AggregateEvent>
             {
-                new (ES.Core.Tools.Instance.Converter.ResourceToEvent(GetType().Assembly, $"{PathToResources}PersonCreated.json")),
-                new (ES.Core.Tools.Instance.Converter.ResourceToEvent(GetType().Assembly, $"{PathToResources}PersonNameUpdated.json")),
-                new (ES.Core.Tools.Instance.Converter.ResourceToEvent(GetType().Assembly, $"{PathToResources}PersonMailingAddressUpdated.json"))
+                new (Core.Tools.Instance.Converter.ResourceToEvent(GetType().Assembly, $"{PathToResources}PersonCreated.json")),
+                new (Core.Tools.Instance.Converter.ResourceToEvent(GetType().Assembly, $"{PathToResources}PersonNameUpdated.json")),
+                new (Core.Tools.Instance.Converter.ResourceToEvent(GetType().Assembly, $"{PathToResources}PersonMailingAddressUpdated.json"))
             });
 
         _serviceOptions.Setup(x => x.Value).Returns(new ServiceOptions

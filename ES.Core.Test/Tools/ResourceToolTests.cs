@@ -5,7 +5,7 @@ namespace ES.Core.Test.Tools;
 
 public class ResourceToolTests
 {
-    private string PathToResources = "ES.Core.Test.Aggregates.Events.";
+    private string PathToResources = "ES.Core.Test.Tools.";
 
     [Fact]
     public void Should_Get_Event_From_Resource()
