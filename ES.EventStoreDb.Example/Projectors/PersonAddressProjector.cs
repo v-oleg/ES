@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ES.EventStoreDb.Example.Projectors
 {
+    [Ignore]
     [AggregateStream("merchant", nameof(People))]
     public class PersonAddressProjector : AggregateProjector<PersonAddressProjection>
     {

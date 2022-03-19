@@ -17,12 +17,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var sqlOptions = new SqlOptions();
-builder.Configuration.GetSection(SqlOptions.SqlSection).Bind(sqlOptions);
-builder.Services.AddDbContext<SqlDbContext>(options =>
-{
-    options.UseSqlServer(sqlOptions.ConnectionString);
-});
+// var sqlOptions = new SqlOptions();
+// builder.Configuration.GetSection(SqlOptions.SqlSection).Bind(sqlOptions);
+// builder.Services.AddDbContext<SqlDbContext>(options =>
+// {
+//     options.UseSqlServer(sqlOptions.ConnectionString);
+// });
 
 BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String));
 

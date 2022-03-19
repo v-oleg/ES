@@ -1,13 +1,11 @@
 {
   "data": {
-    "Address": {
-      "Address1": "Address1",
-      "Address2": "Address2",
-      "City": "City",
-      "State": "State",
-      "ZipCode": "ZipCode",
-      "Country": "Country"
-    }
+    "Address1": "Address1",
+    "Address2": "Address2",
+    "City": "City",
+    "State": "State",
+    "ZipCode": "ZipCode",
+    "Country": "Country"
   },
   "eventId": "27836657-d3d0-4a8f-88f7-8dc3e2a40972",
   "eventNumber": 2,

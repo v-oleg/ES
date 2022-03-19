@@ -52,7 +52,7 @@ public class PeopleController : ControllerBase
     }
 
     [HttpPatch]
-    [Route("{id}")]
+    [Route("{id}/name")]
     public async Task<IActionResult> UpdatePersonName([FromRoute] Guid id, [FromBody] Person person)
     {
         var aggregateId = id;

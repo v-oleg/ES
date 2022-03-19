@@ -19,6 +19,11 @@ public abstract class AggregateProjector<TProjection> : Projector
         }
     }
 
+    public sealed override Task InitAsync()
+    {
+        throw new NotSupportedException();
+    }
+    
     public sealed override async Task InitAsync(Guid aggregateId)
     {
         Value.AggregateId = aggregateId;
@@ -31,7 +36,7 @@ public abstract class AggregateProjector<TProjection> : Projector
         {
             await UpdateLasEventNumberAsync(@event.EventNumber);
             return;
-        };
+        }
 
         var isAsync = EventHandlers[@event.EventName].GetCustomAttribute<AsyncStateMachineAttribute>() != null;
         if (isAsync)
