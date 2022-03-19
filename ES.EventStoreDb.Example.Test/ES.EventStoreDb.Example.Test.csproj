@@ -25,6 +25,10 @@
       <EmbeddedResource Include="Aggregates\Events\PersonCreated.json" />
       <EmbeddedResource Include="Aggregates\Events\PersonMailingAddressUpdated.json" />
       <EmbeddedResource Include="Aggregates\Events\PersonNameUpdated.json" />
+      <EmbeddedResource Include="Projectors\Events\PersonCreated.json" />
+      <EmbeddedResource Include="Projectors\Events\PersonMailingAddressUpdated.json" />
+      <EmbeddedResource Include="Projectors\Events\PersonNameUpdated.json" />
+      <EmbeddedResource Include="Projectors\Events\PersonNameUpdated_1.json" />
     </ItemGroup>
 
     <ItemGroup>
