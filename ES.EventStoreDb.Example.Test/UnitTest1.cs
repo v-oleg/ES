@@ -1,6 +1,6 @@
 using Xunit;
 
-namespace ES.EventStore.Example.Test;
+namespace ES.EventStoreDb.Example.Test;
 
 public class UnitTest1
 {
