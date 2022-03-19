@@ -7,7 +7,7 @@ namespace ES.Core.Services.Abstractions;
 public abstract class AggregateProjector<TProjection> : Projector
     where TProjection : Projection, new() 
 {
-    protected TProjection Value = new();
+    public TProjection Value = new();
 
     private Dictionary<string, MethodInfo> EventHandlers
     {
@@ -46,7 +46,7 @@ public abstract class AggregateProjector<TProjection> : Projector
         await UpdateLasEventNumberAsync(@event.EventNumber);
     }
     
-    public sealed override async Task HandleAsync<TEvent>(IEnumerable<TEvent> events)
+    public sealed override async Task<object> HandleAsync<TEvent>(IEnumerable<TEvent> events)
     {
         foreach (var @event in events)
         {
@@ -56,11 +56,13 @@ public abstract class AggregateProjector<TProjection> : Projector
             if (isAsync)
             {
                 await (Task) EventHandlers[@event.EventName].Invoke(this, new object[] {@event})!;
-    
-                return;
             }
-    
-            EventHandlers[@event.EventName].Invoke(this, new object?[] {@event});
+            else
+            {
+                EventHandlers[@event.EventName].Invoke(this, new object?[] { @event });
+            }
         }
+
+        return Value;
     }
 }
