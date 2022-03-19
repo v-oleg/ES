@@ -4,10 +4,10 @@ namespace ES.Core.Services.Abstractions;
 
 internal interface IProjectorInformation
 {
-    Type AggregateProjectorType { get; set; }
-    string AggregateProjector { get; }
-    string AggregateType { get; }
-    string Service { get; }
+    Type ProjectorType { get; set; }
+    string Projector { get; }
+    string? AggregateType { get; }
+    string? Service { get; }
     string TypeFullName { get; }
     Assembly AssemblyName { get; }
     IReadOnlyList<string> Events { get; }

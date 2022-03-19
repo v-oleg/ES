@@ -5,5 +5,5 @@ namespace ES.Core.Services.Abstractions;
 
 internal interface ISubscription
 {
-    Task SubscribeAsync(params Type[] aggregateProjectors);
+    Task SubscribeAsync(params Type[] projectors);
 }

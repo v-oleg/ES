@@ -1,5 +1,7 @@
 using System.Collections.Concurrent;
+using System.Reflection;
 using ES.Core;
+using ES.Core.Attributes;
 using ES.Core.Services.Abstractions;
 using ES.EventStoreDb.Extensions;
 using EventStore.Client;
@@ -22,7 +24,7 @@ internal sealed class AggregateSubscription : ISubscription
         IProjectorFactory projectorFactory)
     {
         _eventStoreClient = eventStoreClient;
-        _aggregateProjectorInformations = aggregateProjectorInformations.ToDictionary(k => k.AggregateProjectorType);
+        _aggregateProjectorInformations = aggregateProjectorInformations.ToDictionary(k => k.ProjectorType);
         _projectorFactory = projectorFactory;
     }
 
@@ -30,14 +32,16 @@ internal sealed class AggregateSubscription : ISubscription
     {
         if (aggregateProjectors.Length == 0)
         {
-            foreach (var aggregateProjectorInformation in _aggregateProjectorInformations.Values)
+            foreach (var aggregateProjectorInformation in _aggregateProjectorInformations.Values.Where(p =>
+                         p.ProjectorType.GetCustomAttribute(typeof(AggregateStreamAttribute)) != null))
             {
                 await SubscribeAsync(aggregateProjectorInformation);
             }
         }
         else
         {
-            foreach (var aggregateProjector in aggregateProjectors)
+            foreach (var aggregateProjector in aggregateProjectors.Where(p =>
+                         p.GetCustomAttribute(typeof(AggregateStreamAttribute)) != null))
             {
                 await SubscribeAsync(_aggregateProjectorInformations[aggregateProjector]);
             }
@@ -49,12 +53,12 @@ internal sealed class AggregateSubscription : ISubscription
     private async Task SubscribeAsync(IProjectorInformation projectorInformation)
     {
         var stream =
-            Tools.Instance.Converter.ToAggregateNameStream(projectorInformation.Service,
-                projectorInformation.AggregateType);
+            Tools.Instance.Converter.ToAggregateNameStream(projectorInformation.Service!,
+                projectorInformation.AggregateType!);
 
         var aggregateProjector = AggregateProjectors.ContainsKey(projectorInformation.TypeFullName)
             ? AggregateProjectors[projectorInformation.TypeFullName]
-            : _projectorFactory.Create(projectorInformation.AggregateProjectorType);
+            : _projectorFactory.Create(projectorInformation.ProjectorType);
 
         var lastEventNumber = await aggregateProjector.GetLasEventNumberAsync();
         var startFrom = lastEventNumber == null
