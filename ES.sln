@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShipBob.Order", "ShipBob.Or
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShipBob.Shipment", "ShipBob.Shipment\ShipBob.Shipment.csproj", "{13B9A0C3-8162-4162-9623-A3C0C9C22BAE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShipBob.CreateShipment.ProcessManager", "ShipBob.CreateShipment.ProcessManager\ShipBob.CreateShipment.ProcessManager.csproj", "{5E8E629C-24AC-4BCD-A8B0-40277C929AB0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,5 +68,9 @@ Global
 		{13B9A0C3-8162-4162-9623-A3C0C9C22BAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13B9A0C3-8162-4162-9623-A3C0C9C22BAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13B9A0C3-8162-4162-9623-A3C0C9C22BAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E8E629C-24AC-4BCD-A8B0-40277C929AB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E8E629C-24AC-4BCD-A8B0-40277C929AB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E8E629C-24AC-4BCD-A8B0-40277C929AB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E8E629C-24AC-4BCD-A8B0-40277C929AB0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
