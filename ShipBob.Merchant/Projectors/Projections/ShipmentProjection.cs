@@ -1,5 +1,6 @@
 using ES.Core.Services.Abstractions;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.Options;
 
 namespace ShipBob.Merchant.Projectors.Projections;
 
@@ -19,7 +20,9 @@ public class ShipmentProjection : Projection
         } 
     }
     
-    public Guid OrderId { get; set; } = default!;
+    public Guid OrderId { get; set; }
+    
+    [BsonDictionaryOptions(DictionaryRepresentation.Document)]
     public Dictionary<string, ShipmentItem> ShipmentItems { get; set; } = new();
     public Address ShippingAddress { get; set; } = default!;
 }

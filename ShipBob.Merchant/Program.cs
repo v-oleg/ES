@@ -7,6 +7,8 @@ using MongoDB.Driver;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using ShipBob.Merchant.ConfigSettings;
+using ShipBob.Merchant.Models;
+using ShipBob.Merchant.Projectors.Projections;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +31,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String));
+BsonSerializer.RegisterSerializer(new Int32Serializer(BsonType.String));
+BsonSerializer.RegisterSerializer(new BooleanSerializer(BsonType.String));
+BsonSerializer.RegisterSerializer(new EnumSerializer<Platform>(BsonType.String));
+BsonSerializer.RegisterSerializer(new EnumSerializer<FinancialStatus>(BsonType.String));
 
 var mongoDbOptions = new MongoDbOptions();
 builder.Configuration.GetSection(MongoDbOptions.MongoDbSection).Bind(mongoDbOptions);

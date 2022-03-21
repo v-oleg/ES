@@ -1,5 +1,6 @@
 using ES.Core.Services.Abstractions;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.Options;
 using ShipBob.Merchant.Models;
 
 namespace ShipBob.Merchant.Projectors.Projections;
@@ -20,7 +21,8 @@ public class MerchantIntegrationProjection : Projection
         } 
     }
 
-    public Dictionary<int, Integration> Integrations { get; } = new();
+    [BsonDictionaryOptions(DictionaryRepresentation.Document)]
+    public Dictionary<int, Integration> Integrations { get; set; } = new();
 }
 
 public class Integration

@@ -20,7 +20,7 @@ public class MerchantIntegrationProjector : AggregateProjector<MerchantIntegrati
     public MerchantIntegrationProjector(MongoClient mongoClient)
     {
         var db = mongoClient.GetDatabase("ProjectionsDemo");
-        _merchantIntegrationCollection = db.GetCollection<BsonDocument>("MerchantUsers");
+        _merchantIntegrationCollection = db.GetCollection<BsonDocument>("MerchantIntegrations");
         _checkpointCollection = db.GetCollection<BsonDocument>("Checkpoints");
     }
     
