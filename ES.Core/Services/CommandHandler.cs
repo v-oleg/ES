@@ -41,7 +41,7 @@ public sealed class CommandHandler : ICommandHandler
             var stream = Tools.Instance.Converter.ToAggregateIdStream(_serviceOptions.Name, command.AggregateType,
                 command.AggregateId);
             var events = (await _eventReader.GetAggregateEventsAsync(stream)).ToList();
-
+            aggregate.AggregateId = events.Count > 0 ? command.AggregateId : null;
             //command must be idempotent. if exists return associated events
             if (!command.IsIdempotent(events))
             {

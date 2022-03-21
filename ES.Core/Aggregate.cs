@@ -17,7 +17,7 @@ public abstract class Aggregate
         _aggregateEventCreator = aggregateEventCreator;
     }
 
-    public Guid? AggregateId { get; private set; } = null;
+    public Guid? AggregateId { get; internal set; }
     public long AggregateVersion { get; protected set; } = -1;
 
     protected internal List<AggregateEvent> EventsToWrite { get; } = new();

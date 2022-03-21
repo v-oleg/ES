@@ -5,4 +5,5 @@ namespace ES.Core.Services.Abstractions;
 public interface IEventReader
 {
     Task<IEnumerable<AggregateEvent>> GetAggregateEventsAsync(string stream);
+    Task<AggregateEvent?> GetFirstAggregateEventOrNullsAsync(string stream);
 }
