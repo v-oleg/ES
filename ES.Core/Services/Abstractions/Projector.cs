@@ -4,7 +4,7 @@ namespace ES.Core.Services.Abstractions;
 
 public abstract class Projector
 {
-    public abstract Task InitAsync();
+    public abstract Task InitAsync(Event e);
     public abstract Task InitAsync(Guid aggregateId);
     
     public abstract Task HandleAsync<TEvent>(TEvent @event) where TEvent : Event;

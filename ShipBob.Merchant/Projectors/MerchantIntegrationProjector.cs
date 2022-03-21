@@ -7,9 +7,11 @@ using MongoDB.Driver;
 using Newtonsoft.Json.Linq;
 using ShipBob.Merchant.Models;
 using ShipBob.Merchant.Projectors.Projections;
+using MerchantIntegration = ShipBob.Merchant.Aggregates.MerchantIntegration;
 
 namespace ShipBob.Merchant.Projectors;
 
+[AggregateStream("merchant", nameof(MerchantIntegration))]
 public class MerchantIntegrationProjector : AggregateProjector<MerchantIntegrationProjection>
 {
     private readonly IMongoCollection<BsonDocument> _merchantIntegrationCollection;

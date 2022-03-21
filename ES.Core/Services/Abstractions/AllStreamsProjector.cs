@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using ES.Core.Attributes;
+using ES.Core.Events;
 
 namespace ES.Core.Services.Abstractions;
 
@@ -22,16 +23,11 @@ public abstract class AllStreamsProjector<TProjection> : Projector
                 });
         }
     }
-    
-    public sealed override Task InitAsync()
-    {
-        throw new NotImplementedException();
-    }
 
     public sealed override async Task InitAsync(Guid aggregateId)
     {
         Value.AggregateId = aggregateId;
-            await FetchAsync();
+        await FetchAsync();
     }
 
     public sealed override async Task HandleAsync<TEvent>(TEvent @event)

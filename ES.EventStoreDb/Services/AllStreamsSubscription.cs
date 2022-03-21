@@ -71,7 +71,7 @@ internal class AllStreamsSubscription : ISubscription
         var e = @event.Event.AsEvent();
 
         e.GetEventJsonReference()["eventNumber"] = @event.Event.Position.CommitPosition;
-        await projector.InitAsync(e.AsAggregateEvent().AggregateId);
+        await projector.InitAsync(e);
         await projector.HandleAsync(e);
     }
 

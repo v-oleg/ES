@@ -9,6 +9,7 @@ using ShipBob.Merchant.Projectors.Projections;
 
 namespace ShipBob.Merchant.Projectors;
 
+[AggregateStream("shipment", "Shipment")]
 public class ShipmentProjector : AggregateProjector<ShipmentProjection>
 {
     private readonly IMongoCollection<BsonDocument> _shipmentCollection;

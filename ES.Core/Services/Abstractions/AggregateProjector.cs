@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using ES.Core.Attributes;
+using ES.Core.Events;
 
 namespace ES.Core.Services.Abstractions;
 
@@ -19,7 +20,7 @@ public abstract class AggregateProjector<TProjection> : Projector
         }
     }
 
-    public sealed override Task InitAsync()
+    public sealed override Task InitAsync(Event e)
     {
         throw new NotSupportedException();
     }

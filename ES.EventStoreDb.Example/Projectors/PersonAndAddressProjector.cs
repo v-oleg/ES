@@ -47,6 +47,11 @@ public class PersonAndAddressProjector : AllStreamsProjector<PersonAndAddressPro
         Value.Country = e.Data["Country"]!.Value<string>()!;
     }
 
+    public override Task InitAsync(Event e)
+    {
+        throw new NotSupportedException();
+    }
+
     public override async Task<ulong?> GetLasEventNumberAsync()
     {
         var checkpointBson = await _checkpointsCollection.Find(new BsonDocument("Projector", GetType().FullName))
