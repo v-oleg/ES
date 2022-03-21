@@ -33,11 +33,11 @@ public class MerchantIntegration : Aggregate
         AddEvent(command, "MerchantIntegrationAdded", data =>
         {
             data["Id"] = integrationId;
+            data["Platform"] = command.Data!["Platform"];
         });
         AddEvent(command, "MerchantIntegrationUpdated", data =>
         {
             data["Id"] = integrationId;
-            data["Platform"] = command.Data!["Platform"];
             data["StoreUrl"] = command.Data!["StoreUrl"];
         });
 

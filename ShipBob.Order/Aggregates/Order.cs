@@ -9,12 +9,17 @@ namespace ShipBob.Order.Aggregates;
 
 public class Order : Aggregate
 {
+    private Guid _merchantId;
+    
     private decimal _totalPrice = default;
     private string _financialStatus;
     private readonly Dictionary<string, int> _orderItems = new ();
 
-    public Order(IAggregateEventCreator aggregateEventCreator) : base(aggregateEventCreator)
+    private readonly IEventReader _eventReader;
+
+    public Order(IAggregateEventCreator aggregateEventCreator, IEventReader eventReader) : base(aggregateEventCreator)
     {
+        _eventReader = eventReader;
     }
 
     [AggregateCommandHandler("IngestOrder")]
@@ -24,8 +29,13 @@ public class Order : Aggregate
         {
             throw new AggregateException("Order already exists.");
         }
-        
-        AddEvent(command, "OrderIngested", new JObject());
+
+        var merchantId = command.Data!["MerchantId"]!.ToObject<Guid>();
+        command.CorrelationId = merchantId;
+        AddEvent(command, "OrderIngested", data =>
+        {
+            data["MerchantId"] = merchantId;
+        });
         AddEvent(command, "OrderFinancialInformationUpdated", data =>
         {
             data["TotalPrice"] = command.Data!["TotalPrice"];
@@ -48,7 +58,7 @@ public class Order : Aggregate
         {
             throw new AggregateException("Order does not exist.");
         }
-        
+        command.CorrelationId = _merchantId;
         AddEvent(command, "OrderShippingAddressUpdated", data =>
         {
             data["ShippingAddress"] = command.Data!["ShippingAddress"];
@@ -63,6 +73,7 @@ public class Order : Aggregate
             throw new AggregateException("Order does not exist.");
         }
         
+        command.CorrelationId = _merchantId;
         AddEvent(command, "OrderFinancialInformationUpdated", data =>
         {
             data["TotalPrice"] = command.Data!["TotalPrice"];
@@ -78,6 +89,7 @@ public class Order : Aggregate
             throw new AggregateException("Order does not exist.");
         }
 
+        command.CorrelationId = _merchantId;
         var itemPrice = command.Data!["Price"]!.Value<decimal>();
         AddEvent(command, "OrderItemAdded", data =>
         {
@@ -123,6 +135,7 @@ public class Order : Aggregate
             quantity = _orderItems[refId];
         }
         
+        command.CorrelationId = _merchantId;
         AddEvent(command, "OrderItemDeleted", data =>
         {
             data["Price"] = itemPrice;
@@ -161,6 +174,12 @@ public class Order : Aggregate
             _orderItems[refId] = quantity;
         }
     }
+
+    [AggregateEventHandler("OrderIngested")]
+    public void OrderIngested(AggregateEvent e)
+    {
+        _merchantId = e.Data["MerchantId"]!.ToObject<Guid>();
+    }
     
     [AggregateEventHandler("OrderItemDeleted")]
     public void OrderItemDeleted(AggregateEvent e)
@@ -172,4 +191,19 @@ public class Order : Aggregate
             _orderItems[refId] -= quantity;
         }
     }
+
+    #region Helper
+
+    private async Task ValidateMerchant(Guid merchantId)
+    {
+        var stream = Tools.Instance.Converter.ToAggregateIdStream("merchant", "Merchant", merchantId);
+        var merchant = await _eventReader.GetFirstAggregateEventOrNullsAsync(stream);
+
+        if (merchant == null)
+        {
+            throw new AggregateException($"Merchant {merchantId} does not exist");
+        }
+    }
+
+    #endregion
 }

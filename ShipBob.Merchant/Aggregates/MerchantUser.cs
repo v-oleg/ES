@@ -38,11 +38,21 @@ public class MerchantUser : Aggregate
             data["LastName"] = command.Data!["LastName"];
         });
 
-        AddEvent(command, "MerchantUserOwnerAssigned", data =>
+        var owner = command.Data!["Owner"]!.Value<bool>();
+        if (owner)
         {
-            data["Id"] = userId;
-            data["Owner"] = command.Data!["Owner"];
-        });
+            AddEvent(command, "MerchantUserOwnerAssigned", data =>
+            {
+                data["Id"] = userId;
+            });
+        }
+        else
+        {
+            AddEvent(command, "MerchantUserOwnerUnassigned", data =>
+            {
+                data["Id"] = userId;
+            });
+        }
     }
 
     [AggregateCommandHandler("UpdateMerchantUserInformation")]
@@ -74,7 +84,6 @@ public class MerchantUser : Aggregate
             AddEvent(command, "MerchantUserOwnerAssigned", data =>
             {
                 data["Id"] = userId;
-                data["Owner"] = true;
             });
         }
     }
@@ -97,7 +106,6 @@ public class MerchantUser : Aggregate
             AddEvent(command, "MerchantUserOwnerUnassigned", data =>
             {
                 data["Id"] = userId;
-                data["Owner"] = false;
             });
         }
     }

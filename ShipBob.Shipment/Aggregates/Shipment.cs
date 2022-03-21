@@ -36,7 +36,7 @@ public class Shipment : Aggregate
         {
             data["OrderId"] = orderId;
         });
-        AddEvent(command, "ShipmentOrderItemsAdded", data =>
+        AddEvent(command, "ShipmentItemsAdded", data =>
         {
             data["ShipmentItems"] = command.Data!["ShipmentItems"];
         });
